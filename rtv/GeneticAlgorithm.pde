@@ -1,4 +1,4 @@
-class geneticAlgorithm {
+class GeneticAlgorithm {
   static final int carTypePenalty = 7;
   static final int timePenalty = 3;
   
@@ -8,12 +8,18 @@ class geneticAlgorithm {
   
   ArrayList<cromosome> generation;
   
-  geneticAlgorithm(ArrayList<Line> lines, ArrayList<Vehicle> vehicles){
+  GeneticAlgorithm(ArrayList<Line> lines, ArrayList<Vehicle> vehicles){
+    this.linesTypes = new ArrayList<boolean[]>();
+    this.linesCapacity = new ArrayList<Integer>();
     for(Line line:lines){
         this.linesTypes.add(line.types);
         this.linesCapacity.add(line.capacity);
+        String tipos = "";
+        for (boolean b : this.linesTypes.get(this.linesTypes.indexOf(line.types))) tipos += (b)?"true, ":"false, ";
+        println(lines.indexOf(line)+"("+line.capacity+"):"+tipos);
     }
     this.vehicles = vehicles;
+    println(vehicles.size());
   } 
   
   void randomizeGeneration() {

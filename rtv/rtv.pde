@@ -1,11 +1,12 @@
 int xPos;                        
 int timer = 0;
-color[] backgrounds = { color(100,70,70), color(104, 135, 36) };
+color[] backgrounds = { color(100, 70, 70), color(104, 135, 36) };
 color[] vehicleBackgrounds = {color(118, 70, 25), color(46, 206, 219), color(0) };
 int[] win = {1440, 800};
 float[] sizeRTV = {win[0]*0.2, win[1]*0.6};
 RTV rtv;
 int REIT = 50;
+GeneticAlgorithm solver;
 
 void setup()                   
 {
@@ -21,15 +22,14 @@ void setup()
   rtv.hold(4, new MotoVieja());
   rtv.hold(4, new MotoNueva());
   Vehicle s = new SedanNuevo();
-  rtv.hold(1,s);
+  rtv.hold(1, s);
   frameRate(REIT);
-  print("uno");
 }
 
 void draw() {
   background (100);
   text("Leyenda: "+timer, 10, 20);
-  if(frameCount % REIT == 0) timer+=1;
+  if (frameCount % REIT == 0) timer+=1;
 
   Vehicle[] muestrario = {
     new Vehicle(30), 
@@ -53,8 +53,67 @@ void draw() {
   rtv.draw();
 }
 
+void keyPressed() {
+  if (key == CODED) {
+    if (keyCode == UP) {
+      println("up arrow");
+    }
+  } else if (key == 's') {
+    println(solver);
+    solver = new GeneticAlgorithm(randomLines(), randomVehicles());
+  }
+}
+
+ArrayList<Vehicle> randomVehicles() {
+  ArrayList<Vehicle> queue = new ArrayList<Vehicle>();
+  int queueSize = 10;
+  for (int i = 0; i < queueSize; i++) {
+    Vehicle v;
+    int vehicleType = int(random(100)%6);
+    switch (vehicleType) {
+    case 0:
+      v = new MotoNueva();
+      break;
+    case 1:
+      v = new MotoVieja();
+      break;
+    case 2:
+      v = new SedanNuevo();
+      break;
+    case 3:
+      v = new SedanViejo();
+      break;
+    case 4:
+      v = new Bus();
+      break;
+    case 5:
+      v = new CamionDosEjes();
+      break;
+    default:
+      v = new CamionCincoEjes();
+      break;
+    }
+    queue.add(v);
+  }
+  return queue;
+}
+
+ArrayList<Line> randomLines() {
+  ArrayList<Line> queue = new ArrayList<Line>();
+  int numLines = 3;
+  boolean[] types;
+  Line l;
+  for (int i = 0; i < numLines; i++) {
+    types = new boolean[6];
+    for (int k = 0; k < types.length; k++) types[k] = (random(100)>50) ? true : false;
+    l = new Line(int(random(150, 400)), true, types, 0, 0, 0, 0);
+    queue.add(l);
+  }
+  return queue;
+}
+
 boolean isVehicle(color c) {
-  for(color cl : vehicleBackgrounds) {
+  for (color cl : vehicleBackgrounds) {
     if (c == cl) return true;
   }
   return false;
