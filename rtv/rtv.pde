@@ -19,6 +19,7 @@ void setup()
   rtv.attend(2, new MotoVieja());
   rtv.hold(5, new MotoVieja());
   rtv.hold(4, new MotoVieja());
+  rtv.hold(4, new MotoNueva());
   Vehicle s = new SedanNuevo();
   rtv.hold(1,s);
   frameRate(REIT);

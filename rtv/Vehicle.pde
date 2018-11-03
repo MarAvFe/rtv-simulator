@@ -80,18 +80,18 @@ class Vehicle {
       can = true;
     }
     /*  fill(pix);
-      text(""+pix,0,70);
-      fill(vehicleBackgrounds[0]);
-      text(""+vehicleBackgrounds[0],0,100);
-      fill(vehicleBackgrounds[1]);
-      text(""+vehicleBackgrounds[1],0,130);
-      if(pix == vehicleBackgrounds[1]) {
-        for(int i = 0; i < vehicleBackgrounds.length; i++){
-          fill(vehicleBackgrounds[i]);
-          text(""+vehicleBackgrounds[i],0,200+20*i);
-        }
-        //noLoop();
-      }*/
+    text(""+pix,0,70);
+    fill(vehicleBackgrounds[0]);
+    text(""+vehicleBackgrounds[0],0,100);
+    fill(vehicleBackgrounds[1]);
+    text(""+vehicleBackgrounds[1],0,130);
+    if(pix == vehicleBackgrounds[1]) {
+      for(int i = 0; i < vehicleBackgrounds.length; i++){
+        fill(vehicleBackgrounds[i]);
+        text(""+vehicleBackgrounds[i],0,200+20*i);
+      }
+      //noLoop();
+    }*/
     popMatrix();
     popStyle();
     return can;

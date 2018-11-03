@@ -91,11 +91,7 @@ class Line extends Queue {
   }
 
   void draw() {
-    if( this.isAttention ) {
-      fill(backgrounds[0]);
-    } else {
-      fill(backgrounds[1]);  
-    }
+    fill(backgrounds[(this.isAttention)?0:1]);
     rect(this.pathStart, this.pathHeight-this.pathAltitude/2, this.pathLength, this.pathAltitude);
     for (Vehicle v : this.queue) {
       if (frameCount%REIT == 0) v.giveStep();
