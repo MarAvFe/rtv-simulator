@@ -48,7 +48,8 @@ class Vehicle {
     this.posY = y;
   }
 
-  void setOffsets(float x, float y) { 
+  void setOffsets(float x, float y) {
+    if(x == 0.0) x = width*0.35; // TODO: khe bergüensa
     this.offsetX = x; 
     this.offsetY = y;
   }
@@ -58,15 +59,10 @@ class Vehicle {
   }
 
   boolean canGiveStep() { // LookAhead
-    if ( this.pathLength < this.stepSize ){
+    if ( this.pathLength < this.stepSize-30 ){ // TODO: fix magic number
       this.attended = false;
       return false;
     }
-    boolean can;
-    pushStyle();
-    pushMatrix();
-    translate(this.posX, this.posY);
-    rotate(this.orientation);
     
     loadPixels();
     float x = this.posX+this.offsetX+100;
@@ -74,26 +70,12 @@ class Vehicle {
     int sight = int(y*width+x);
     color pix = pixels[sight];
     
+    boolean can;
     if ( isVehicle( pix ) ) {
       can = false;
     } else {
       can = true;
     }
-    /*  fill(pix);
-    text(""+pix,0,70);
-    fill(vehicleBackgrounds[0]);
-    text(""+vehicleBackgrounds[0],0,100);
-    fill(vehicleBackgrounds[1]);
-    text(""+vehicleBackgrounds[1],0,130);
-    if(pix == vehicleBackgrounds[1]) {
-      for(int i = 0; i < vehicleBackgrounds.length; i++){
-        fill(vehicleBackgrounds[i]);
-        text(""+vehicleBackgrounds[i],0,200+20*i);
-      }
-      //noLoop();
-    }*/
-    popMatrix();
-    popStyle();
     return can;
   }
 
@@ -121,12 +103,6 @@ class Vehicle {
     translate(this.posX, this.posY);
     rotate(this.orientation);
     this.shape();
-    /*loadPixels();
-    float x = this.posX+this.offsetX+110;
-    float y = this.posY+this.offsetY;
-    int sight = int(y*width+x);
-    pixels[sight] = color(255);
-    updatePixels();*/
     if (this.showTicker) {
       rotate(-this.orientation);
       fill(0, 30);

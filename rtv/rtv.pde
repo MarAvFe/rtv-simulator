@@ -23,6 +23,7 @@ void setup()
   Vehicle s = new SedanNuevo();
   rtv.hold(1,s);
   frameRate(REIT);
+  print("uno");
 }
 
 void draw() {
