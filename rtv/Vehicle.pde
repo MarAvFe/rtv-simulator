@@ -1,7 +1,7 @@
 class Vehicle {
 
   int duration, timeLeft;
-  float posX, posY;
+  float posX, posY, offsetX, offsetY;
   float orientation;
   boolean attended, showTicker;
   float stepSize;
@@ -47,6 +47,11 @@ class Vehicle {
     this.posX = x; 
     this.posY = y;
   }
+
+  void setOffsets(float x, float y) { 
+    this.offsetX = x; 
+    this.offsetY = y;
+  }
   
   void setOrientation(float orientation) { 
     this.orientation = radians(orientation);
@@ -57,13 +62,48 @@ class Vehicle {
       this.attended = false;
       return false;
     }
-    return true;
+    boolean can;
+    pushStyle();
+    pushMatrix();
+    translate(this.posX, this.posY);
+    rotate(this.orientation);
+    
+    loadPixels();
+    float x = this.posX+this.offsetX+100;
+    float y = this.posY+this.offsetY;
+    int sight = int(y*width+x);
+    color pix = pixels[sight];
+    
+    if ( isVehicle( pix ) ) {
+      can = false;
+    } else {
+      can = true;
+    }
+    /*  fill(pix);
+      text(""+pix,0,70);
+      fill(vehicleBackgrounds[0]);
+      text(""+vehicleBackgrounds[0],0,100);
+      fill(vehicleBackgrounds[1]);
+      text(""+vehicleBackgrounds[1],0,130);
+      if(pix == vehicleBackgrounds[1]) {
+        for(int i = 0; i < vehicleBackgrounds.length; i++){
+          fill(vehicleBackgrounds[i]);
+          text(""+vehicleBackgrounds[i],0,200+20*i);
+        }
+        //noLoop();
+      }*/
+    popMatrix();
+    popStyle();
+    return can;
   }
 
   void giveStep() {
-    if ( this.canGiveStep() )
+    if ( this.canGiveStep() ){
       this.posX += this.stepSize;
       this.pathLength -= this.stepSize;
+      if ((frameCount % REIT == 0) && this.attended) this.decrease(); /* Si está siendo atendido, disminuya el timer */
+    }
+      
   }
 
   void shape() {
@@ -75,12 +115,18 @@ class Vehicle {
   }
 
   void draw() {
-    if ((frameCount%REIT == 0) && this.attended) this.decrease(); /* Si está siendo atendido, disminuya el timer */
+    
     pushStyle();
     pushMatrix();
     translate(this.posX, this.posY);
     rotate(this.orientation);
     this.shape();
+    /*loadPixels();
+    float x = this.posX+this.offsetX+110;
+    float y = this.posY+this.offsetY;
+    int sight = int(y*width+x);
+    pixels[sight] = color(255);
+    updatePixels();*/
     if (this.showTicker) {
       rotate(-this.orientation);
       fill(0, 30);
@@ -96,10 +142,10 @@ class Vehicle {
 
 class MotoVieja extends Vehicle { 
   MotoVieja() { 
-    super(20);
+    super(30);
   }
   void shape() {
-    fill(color(118, 70, 25));
+    fill(vehicleBackgrounds[0]);
     ellipse(0, 0, 7, 13);
     ellipse(0, 10, 7, 13);
     ellipse(0, -10, 5, 10);
@@ -108,10 +154,10 @@ class MotoVieja extends Vehicle {
 }
 class MotoNueva extends Vehicle { 
   MotoNueva() { 
-    super(30);
+    super(20);
   }
   void shape() {
-    fill(color(46, 206, 219));
+    fill(vehicleBackgrounds[1]);
     ellipse(0, 0, 7, 13);
     ellipse(0, 10, 7, 13);
     ellipse(0, -10, 5, 10);

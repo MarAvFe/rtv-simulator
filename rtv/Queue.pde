@@ -47,6 +47,7 @@ class Line extends Queue {
     this.load += v.getDuration();
     v.setPathLength(this.pathLength);
     v.setPos(this.pathStart, this.pathHeight);
+    v.setOffsets(this.pathStart, this.pathAltitude);
     super.queue(v);
   }
 
@@ -91,9 +92,9 @@ class Line extends Queue {
 
   void draw() {
     if( this.isAttention ) {
-      fill(color(100,70,70));
+      fill(backgrounds[0]);
     } else {
-      fill(color(104, 135, 36));  
+      fill(backgrounds[1]);  
     }
     rect(this.pathStart, this.pathHeight-this.pathAltitude/2, this.pathLength, this.pathAltitude);
     for (Vehicle v : this.queue) {

@@ -1,11 +1,7 @@
-int xPos;                      
-int speed=1;                   
-int xDir=1;                    
-int score=0;                   
-int lives=5;                   
-boolean lost=false;            
+int xPos;                        
 int timer = 0;
-
+color[] backgrounds = { color(100,70,70), color(104, 135, 36) };
+color[] vehicleBackgrounds = {color(118, 70, 25), color(46, 206, 219), color(0) };
 int[] win = {1440, 800};
 float[] sizeRTV = {win[0]*0.2, win[1]*0.6};
 RTV rtv;
@@ -20,7 +16,7 @@ void setup()
   textSize(15);                
   rtv = new RTV(6);
   rtv.attend(2, new MotoNueva());
-  rtv.attend(1, new MotoVieja());
+  rtv.attend(2, new MotoVieja());
   rtv.hold(5, new MotoVieja());
   rtv.hold(4, new MotoVieja());
   Vehicle s = new SedanNuevo();
@@ -53,4 +49,11 @@ void draw() {
 
   rtv.update();
   rtv.draw();
+}
+
+boolean isVehicle(color c) {
+  for(color cl : vehicleBackgrounds) {
+    if (c == cl) return true;
+  }
+  return false;
 }
