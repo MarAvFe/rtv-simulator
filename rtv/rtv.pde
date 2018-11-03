@@ -1,7 +1,7 @@
 int xPos;                        
 int timer = 0;
 color[] backgrounds = { color(100, 70, 70), color(104, 135, 36) };
-color[] vehicleBackgrounds = {color(118, 70, 25), color(46, 206, 219), color(0) };
+color[] vehicleBackgrounds = {color(118, 70, 25), color(46, 206, 219), color(255) };
 int[] win = {1440, 800};
 float[] sizeRTV = {win[0]*0.2, win[1]*0.6};
 RTV rtv;
@@ -22,6 +22,7 @@ void setup()
   rtv.hold(4, new MotoVieja());
   rtv.hold(4, new MotoNueva());
   Vehicle s = new SedanNuevo();
+  rtv.attend(4, new Bus());
   rtv.hold(1, s);
   frameRate(REIT);
 }
@@ -49,8 +50,8 @@ void draw() {
     muestrario[i].draw();
   }
 
-  rtv.update();
   rtv.draw();
+  rtv.update();
 }
 
 void keyPressed() {

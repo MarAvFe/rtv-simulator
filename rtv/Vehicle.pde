@@ -64,17 +64,20 @@ class Vehicle {
       return false;
     }
     
+    boolean can = true;
     loadPixels();
     float x = this.posX+this.offsetX+100;
     float y = this.posY+this.offsetY;
-    int sight = int(y*width+x);
-    color pix = pixels[sight];
-    
-    boolean can;
-    if ( isVehicle( pix ) ) {
-      can = false;
-    } else {
-      can = true;
+    color[] pixs = new color[int(this.stepSize+0.3)];
+    for (int i = 0; i < pixs.length; i++) {
+      int sight = int(y*width + x + i);
+      pixs[i] = pixels[sight];
+    }
+    for (color c : pixs) {
+      if ( isVehicle(c) ) {
+        can = false;
+        break;
+      }
     }
     return can;
   }
@@ -85,10 +88,10 @@ class Vehicle {
       this.pathLength -= this.stepSize;
       if ((frameCount % REIT == 0) && this.attended) this.decrease(); /* Si está siendo atendido, disminuya el timer */
     }
-      
   }
 
   void shape() {
+    fill(vehicleBackgrounds[2]);
     beginShape();
     vertex(0, -15);
     vertex(-10, 15);
