@@ -68,7 +68,7 @@ class Vehicle {
 
     boolean can = true;
     loadPixels();
-    ahead = (this.attended) ? 100 : 20;
+    ahead = (this.attended) ? 100 : 40;
     float x = this.posX+this.offsetX+ahead;
     float y = this.posY+this.offsetY;
     color[] pixs = new color[int(this.stepSize)];
@@ -89,11 +89,11 @@ class Vehicle {
   void giveStep() {
     if ( this.canGiveStep() ) {
       float paso;
-      if ((frameCount % REIT == 0) && !this.stuck) {
+      if ( (frameCount % REIT == 0) && this.attended) {
         paso = this.stepSize;
         this.decrease(); /* Si está siendo atendido, disminuya el timer */
       } else {
-        paso = this.stepSize*4;
+        paso = this.stepSize*3;
       }
       this.posX += paso;
       this.pathLength -= paso;

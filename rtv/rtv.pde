@@ -21,14 +21,15 @@ void setup()
   rtv.hold(5, new MotoVieja());
   rtv.hold(4, new MotoVieja());
   rtv.hold(4, new MotoNueva());
-  Vehicle s = new SedanNuevo();
   rtv.attend(4, new Bus());
+  rtv.hold(4, new SedanNuevo());
+  Vehicle s = new SedanNuevo();
   rtv.hold(1, s);
   frameRate(REIT);
 }
 
 void draw() {
-  background (100);
+  background (100,70,25);
   text("Leyenda: "+timer, 10, 20);
 
   Vehicle[] muestrario = {

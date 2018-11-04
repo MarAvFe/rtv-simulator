@@ -186,7 +186,7 @@ class RTV {
     this.drawAttention();
 
     strokeCap(SQUARE);
-    strokeWeight(10);
+    strokeWeight(5);
     for (int i = 0; i < this.numLines+1; i++) {
       float linePos = this.lineHeight * i;
       if ( (i==0) || (i==this.numLines) ) {
