@@ -5,6 +5,7 @@ color[] vehicleBackgrounds = {color(118, 70, 25), color(46, 206, 219), color(255
 int[] win = {1440, 800};
 float[] sizeRTV = { width * 0.2, height * 0.6 };
 RTV rtv;
+Street street;
 int REIT = 10;
 GeneticAlgorithm solver;
 
@@ -14,7 +15,8 @@ void setup()
   smooth(4);
   xPos = width / 2;                
   fill(0, 255, 0);               
-  textSize(15);                
+  textSize(15);       
+  street = new Street();
   rtv = new RTV(6);
   rtv.attend(2, new MotoNueva());
   rtv.attend(2, new MotoVieja());
@@ -51,6 +53,7 @@ void draw() {
   }
 
   rtv.draw();
+  street.draw();
   
   if (frameCount % REIT == 0) {
     timer+=1;
@@ -66,6 +69,10 @@ void keyPressed() {
   } else if (key == 's') {
     println(solver);
     solver = new GeneticAlgorithm(randomLines(), randomVehicles());
+  } else if ((key == '1') || (key == '2') || (key == '3') || (key == '4') || (key == '5') || (key == '6') || (key == '7')) {
+    println(key);
+    String[] splitted = split(key+"", "\n");
+    street.addVehicle(int(splitted[0])-1);
   }
 }
 

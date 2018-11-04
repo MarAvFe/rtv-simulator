@@ -46,7 +46,8 @@ class Line extends Queue {
   void queue(Vehicle v) {
     this.load += v.getDuration();
     v.setPathLength(this.pathLength);
-    v.setPos(this.pathStart, this.pathHeight);
+    float back = 0; //this.isAttention ? 0 : this.queue.size()*20; 
+    v.setPos(this.pathStart-back, this.pathHeight);
     v.setOffsets(this.pathStart, this.pathAltitude);
     super.queue(v);
   }
@@ -201,5 +202,61 @@ class RTV {
     }
     popStyle();
     popMatrix();
+  }
+}
+
+class Street {
+  ArrayList<Vehicle> pending;
+  float startX, startY;
+  Street(){
+    this.pending = new ArrayList<Vehicle>();
+    this.startX = width*0.02;
+    this.startY = height*0.4;
+  }
+  
+  void addVehicle(int type) {
+    Vehicle v;
+    switch (type) {
+    case 0:
+      v = new MotoNueva();
+      break;
+    case 1:
+      v = new MotoVieja();
+      break;
+    case 2:
+      v = new SedanNuevo();
+      break;
+    case 3:
+      v = new SedanViejo();
+      break;
+    case 4:
+      v = new Bus();
+      break;
+    case 5:
+      v = new CamionDosEjes();
+      break;
+    default:
+      v = new CamionCincoEjes();
+      break;
+    }
+    pending.add(v);
+  }
+  
+  void draw(){
+    fill(50);
+    rect(startX, startY, width*0.25, height*0.3);
+    for(Vehicle v : pending){
+      float x;
+      if (pending.indexOf(v) > 5) {
+        x = this.startX+40+(50*(pending.indexOf(v)-5));
+      } else {
+        x = this.startX+40;
+      };
+      
+      float y = this.startY+20+((pending.indexOf(v)%5)*50);
+      v.setPos(x, y);
+      v.draw();
+    }
+    
   }
 }

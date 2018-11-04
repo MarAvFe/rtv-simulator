@@ -93,7 +93,7 @@ class Vehicle {
         paso = this.stepSize;
         this.decrease(); /* Si está siendo atendido, disminuya el timer */
       } else {
-        paso = this.stepSize*3;
+        paso = this.stepSize*2;
       }
       this.posX += paso;
       this.pathLength -= paso;
