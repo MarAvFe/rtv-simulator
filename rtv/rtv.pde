@@ -6,6 +6,7 @@ int[] win = {1440, 800};
 float[] sizeRTV = { width * 0.2, height * 0.6 };
 RTV rtv;
 Street street;
+Control ctrl;
 int REIT = 10;
 GeneticAlgorithm solver;
 
@@ -17,16 +18,8 @@ void setup()
   fill(0, 255, 0);               
   textSize(15);       
   street = new Street();
-  rtv = new RTV(6);
-  /*rtv.attend(2, new MotoNueva());
-  rtv.attend(2, new MotoVieja());
-  rtv.hold(5, new MotoVieja());
-  rtv.hold(4, new MotoVieja());
-  rtv.hold(4, new MotoNueva());
-  rtv.attend(4, new Bus());
-  rtv.hold(4, new SedanNuevo());
-  Vehicle s = new SedanNuevo();
-  rtv.hold(1, s);*/
+  //rtv = ;
+  ctrl = new Control(new RTV(6));
   frameRate(REIT);
 }
 
@@ -34,56 +27,55 @@ void draw() {
   background (100,70,25);
   text("Leyenda: "+timer, 10, 20);
 
-  Vehicle[] muestrario = {
-    new Vehicle(30), 
-    new MotoVieja(), 
-    new MotoNueva(), 
-    new SedanViejo(), 
-    new SedanNuevo(), 
-    new Bus(), 
-    new CamionDosEjes(), 
-    new CamionCincoEjes()
-  };
-  for ( int i = 0; i < muestrario.length; i++ ) {
-    float altura = 50+(i*25);
-    muestrario[i].setPos(30, altura);
-    muestrario[i].showTicker = false;
-    text(muestrario[i].getClass().getName()+": "+muestrario[i].duration, 60, altura+5);
-    muestrario[i].draw();
-  }
+  
 
-  rtv.draw();
+  ctrl.rtv.draw();
   street.draw();
+  ctrl.draw();
   
   if (frameCount % REIT == 0) {
     timer+=1;
   }
-  rtv.update();
+  ctrl.rtv.update();
 }
 
 void keyPressed() {
   if (key == CODED) {
     if (keyCode == UP) {
-      println("up arrow");
+      ctrl.selectUp();
+    }
+    if (keyCode == DOWN) {
+      ctrl.selectDown();
     }
   } else if (key == 's') {
     println("random solver");
     solver = new GeneticAlgorithm(randomLines(), randomVehicles());
     solver.solve();
-  }else if (key == 'd') {
-    if (rtv.dealing) return;
-    solver = new GeneticAlgorithm(rtv.attentionLines, street.pending);
+  } else if (key == 'f') {  // delete from queue
+    ctrl.rtv.attentionLines.get(ctrl.selected).dequeue();
+  } else if (key == 'p') {  // pause line
+    ctrl.rtv.attentionLines.get(ctrl.selected).running = ! ctrl.rtv.attentionLines.get(ctrl.selected).running;
+  } else if (keyCode == 127) {  // DEL key
+    street.pending.remove(street.pending.get(street.pending.size()-1));
+  } else if (key == 'd') {
+    if (ctrl.rtv.dealing) return;
+    solver = new GeneticAlgorithm(ctrl.rtv.attentionLines, street.pending);
     int[] solution = solver.solve();
     assert solution.length == street.pending.size();
     int idx;
     for (Vehicle v : street.pending){
       idx = street.pending.indexOf(v);
-      rtv.deals.add(new Deal(solution[idx], v));
+      ctrl.rtv.deals.add(new Deal(solution[idx], v));
     }
-    rtv.dealing = true;
+    ctrl.rtv.dealing = true;
   } else if ("1234567".indexOf(key) > -1) {
     String[] splitted = split(key+"", "\n");
     street.addVehicle(int(splitted[0])-1);
+  } else if (ctrl.typeCtrl.indexOf(key) > -1) {
+    int idx = ctrl.typeCtrl.indexOf(key);
+    ctrl.rtv.attentionLines.get(ctrl.selected).types[idx] = ! ctrl.rtv.attentionLines.get(ctrl.selected).types[idx];
+  } else {
+    println("Debug: " + key +", "+keyCode);
   }
 }
 

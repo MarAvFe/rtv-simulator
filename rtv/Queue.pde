@@ -16,6 +16,7 @@ class Queue {
   }
 
   Vehicle dequeue() {
+    if ( this.queue.size() < 1 ) return null;
     Vehicle res = this.queue.get(0);
     this.queue.remove(res);
     return res;
@@ -54,6 +55,7 @@ class Line extends Queue {
 
   Vehicle dequeue() {
     Vehicle v = super.dequeue();
+    if (v == null) return null;
     this.load -= v.getDuration();
     return v;
   }
@@ -87,7 +89,7 @@ class Line extends Queue {
           return v;
         }
       }
-      if (frameCount % REIT == 0) 
+      if ((frameCount % REIT == 0) && (this.running)) 
         v.giveStep();
     }
     return null;
@@ -96,9 +98,23 @@ class Line extends Queue {
   void draw() {
     fill(backgrounds[(this.isAttention)?0:1]);
     rect(this.pathStart, this.pathHeight-this.pathAltitude/2, this.pathLength, this.pathAltitude);
+    if (! this.running) {
+      pushStyle();
+      stroke(255,0,0);
+      strokeWeight(5);
+      line(this.pathStart, this.pathHeight-this.pathAltitude/2, this.pathStart, this.pathHeight);
+      line(this.pathStart, this.pathHeight, this.pathStart+this.pathAltitude, this.pathHeight-this.pathAltitude/2);
+      popStyle();
+    }
     for (Vehicle v : this.queue) {
       v.draw();
     }
+  }
+
+  String toString() {
+    String res = "";
+    for ( boolean b : this.types ) res += b + ", ";
+    return res;
   }
 }
 
@@ -127,13 +143,13 @@ class RTV {
     this.deals = new ArrayList<Deal>();
     this.attentionLines = new ArrayList<Line>(this.numLines);
     this.waitLines = new ArrayList<Line>(this.numLines);
-    boolean[] types = {true, true, true, true, true, true, true};
     this.posX = width*0.35;
     this.posY = height*0.1;
     this.allHeight = height*0.6;
     this.allWidth = width*0.6;
     this.lineHeight = this.allHeight / this.numLines;
     for ( int i = 0; i < numLines; i++ ) {
+      boolean[] types = {true, true, true, true, true, true, true};
       float h = this.posY + (i*this.lineHeight - this.lineHeight/2);
       this.attentionLines.add(new Line(20, true, types, this.allWidth/2, h, this.allWidth/2, this.lineHeight));
       this.waitLines.add(new Line(20, false, types, 0, h, this.allWidth/2, this.lineHeight));
@@ -194,7 +210,7 @@ class RTV {
       for (Deal d : this.deals ) {
         if ( dealt[d.lineNum] ) continue;
         dealt[d.lineNum] = true;
-        rtv.hold(d.lineNum, d.vehicle);
+        ctrl.rtv.hold(d.lineNum, d.vehicle);
         remove.add(this.deals.indexOf(d));
       }
       ArrayList<Deal> tmp = new ArrayList(this.deals);
@@ -273,8 +289,12 @@ class Street {
   }
 
   void draw() {
+    pushStyle();
     fill(50);
+    strokeWeight(3);
+    if (ctrl.rtv.dealing) stroke(255, 0, 0);
     rect(startX, startY, width*0.25, height*0.3);
+    popStyle();
     for (Vehicle v : pending) {
       float x = this.startX+40+(50*(int(pending.indexOf(v)/5)));
       float y = this.startY+20+((pending.indexOf(v)%5)*50);
