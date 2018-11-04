@@ -71,11 +71,14 @@ class Vehicle {
     ahead = (this.attended) ? 100 : 40;
     float x = this.posX+this.offsetX+ahead;
     float y = this.posY+this.offsetY;
-    color[] pixs = new color[int(this.stepSize)];
+    int delta = (this.attended) ? 5 : 20;
+    color[] pixs = new color[int(this.stepSize+delta)];
     for (int i = 0; i < pixs.length; i++) {
-      int sight = int(y*width + x + i);
+      int sight = int(y*width + x + i - delta);
       pixs[i] = pixels[sight];
+      // pixels[sight] = color(255); // aim 
     }
+    //updatePixels();
     for (color c : pixs) {
       if ( isVehicle(c) ) {
         can = false;
@@ -93,7 +96,7 @@ class Vehicle {
         paso = this.stepSize;
         this.decrease(); /* Si está siendo atendido, disminuya el timer */
       } else {
-        paso = this.stepSize*2;
+        paso = this.stepSize*3;
       }
       this.posX += paso;
       this.pathLength -= paso;
@@ -120,7 +123,7 @@ class Vehicle {
       rotate(-this.orientation);
       fill(0, 30);
       stroke(0, 0);
-      rect(-20, -30, 30, 20);
+      rect(-10, -30, 30, 20);
       fill(255);
       text(this.timeLeft, -10, -15);
     }

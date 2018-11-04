@@ -77,7 +77,7 @@ class Line extends Queue {
   boolean isRunning() {
     return this.running;
   }
-  
+
   Vehicle update() {
     for (Vehicle v : this.queue ) {
       if (v.getPathLenght() < 0) {
@@ -88,7 +88,7 @@ class Line extends Queue {
         }
       }
       if (frameCount % REIT == 0) 
-      v.giveStep();
+        v.giveStep();
     }
     return null;
   }
@@ -102,16 +102,29 @@ class Line extends Queue {
   }
 }
 
+class Deal {
+  int lineNum;
+  Vehicle vehicle;
+  Deal(int n, Vehicle v) {
+    this.lineNum = n;
+    this.vehicle = v;
+  }
+}
+
 class RTV {
   int numLines;
   ArrayList<Line> attentionLines;
   ArrayList<Line> waitLines;
+  ArrayList<Deal> deals;
   float posX, posY;
   float allHeight, allWidth;
   float lineHeight;
+  boolean dealing;
 
   RTV(int numLines) {
+    this.dealing = false;
     this.numLines = numLines;
+    this.deals = new ArrayList<Deal>();
     this.attentionLines = new ArrayList<Line>(this.numLines);
     this.waitLines = new ArrayList<Line>(this.numLines);
     boolean[] types = {true, true, true, true, true, true, true};
@@ -160,7 +173,7 @@ class RTV {
       l.draw();
     }
   }
-  
+
   void update() {
     for ( Line l : this.waitLines ) {
       Vehicle v = l.update();
@@ -175,6 +188,23 @@ class RTV {
         l.queue.remove(v);
       }
     }
+    if (frameCount % (REIT*2) == 0) {
+      boolean[] dealt = new boolean[this.attentionLines.size()];
+      ArrayList<Integer> remove = new ArrayList<Integer>();
+      for (Deal d : this.deals ) {
+        if ( dealt[d.lineNum] ) continue;
+        dealt[d.lineNum] = true;
+        rtv.hold(d.lineNum, d.vehicle);
+        remove.add(this.deals.indexOf(d));
+      }
+      ArrayList<Deal> tmp = new ArrayList(this.deals);
+      for (Integer r : remove) {
+        Deal d = tmp.get(r);
+        this.deals.remove(d);
+        street.pending.remove(d.vehicle);
+      };
+    }
+    if (this.deals.size() == 0) this.dealing = false;
   }
 
   void draw() {    
@@ -208,12 +238,12 @@ class RTV {
 class Street {
   ArrayList<Vehicle> pending;
   float startX, startY;
-  Street(){
+  Street() {
     this.pending = new ArrayList<Vehicle>();
     this.startX = width*0.02;
     this.startY = height*0.4;
   }
-  
+
   void addVehicle(int type) {
     Vehicle v;
     switch (type) {
@@ -241,22 +271,15 @@ class Street {
     }
     pending.add(v);
   }
-  
-  void draw(){
+
+  void draw() {
     fill(50);
     rect(startX, startY, width*0.25, height*0.3);
-    for(Vehicle v : pending){
-      float x;
-      if (pending.indexOf(v) > 5) {
-        x = this.startX+40+(50*(pending.indexOf(v)-5));
-      } else {
-        x = this.startX+40;
-      };
-      
+    for (Vehicle v : pending) {
+      float x = this.startX+40+(50*(int(pending.indexOf(v)/5)));
       float y = this.startY+20+((pending.indexOf(v)%5)*50);
       v.setPos(x, y);
       v.draw();
     }
-    
   }
 }

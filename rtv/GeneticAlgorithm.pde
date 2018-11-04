@@ -1,12 +1,18 @@
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Arrays;
+
 class GeneticAlgorithm {
   static final int carTypePenalty = 7;
   static final int timePenalty = 3;
+  static final int cromosomesPerGeneration = 100;
+  static final int maxGenerations = 500;
   
   ArrayList<boolean[]> linesTypes;
   ArrayList<Integer> linesCapacity;
   ArrayList<Vehicle> vehicles;
   
-  ArrayList<cromosome> generation;
+  ArrayList<Cromosome> generation = new ArrayList<Cromosome>();
   
   GeneticAlgorithm(ArrayList<Line> lines, ArrayList<Vehicle> vehicles){
     this.linesTypes = new ArrayList<boolean[]>();
@@ -16,27 +22,99 @@ class GeneticAlgorithm {
         this.linesCapacity.add(line.capacity);
         String tipos = "";
         for (boolean b : this.linesTypes.get(this.linesTypes.indexOf(line.types))) tipos += (b)?"true, ":"false, ";
-        println(lines.indexOf(line)+"("+line.capacity+"):"+tipos);
+        //println(lines.indexOf(line)+"("+line.capacity+"):"+tipos);
     }
     this.vehicles = vehicles;
-    println(vehicles.size());
+    //for(Vehicle vehicle : vehicles){
+    //  println(vehicle.getClass().getSimpleName());
+    //}
+    //println(vehicles.size());
   } 
   
-  void randomizeGeneration() {
-    for(int i=0; i<100; i++){
+  void initGeneration() {
+    for(int i=0; i<cromosomesPerGeneration; i++){
        int[] representation = new int[this.vehicles.size()]; 
        for(int k=0; k<this.vehicles.size(); k++){
          representation[k] = int(random(this.linesCapacity.size()));
        }
-       this.generation.add(new cromosome(representation, calculateFitness(representation)));
+       this.generation.add(new Cromosome(representation, calculateFitness(representation)));
     }
+  }
+  
+  int[] solve(){
+    initGeneration();
+    int currentGeneration = 0;
+    while(currentGeneration< maxGenerations && this.generation.get(0).fitness!= 0){
+      println(currentGeneration);
+      produceGeneration();
+      currentGeneration++;
+    }
+    println("Best fitness found -> " + this.generation.get(0).toString());
+    return this.generation.get(0).representation;
+  }
+  ArrayList<Cromosome> randomizeGeneration(int quantity) {
+    ArrayList<Cromosome> randomCromosomes = new ArrayList<Cromosome>();
+     for(int i=0; i<quantity; i++){
+       int[] representation = new int[this.vehicles.size()]; 
+       for(int k=0; k<this.vehicles.size(); k++){
+         representation[k] = int(random(this.linesCapacity.size()));
+       }
+       randomCromosomes.add(new Cromosome(representation, calculateFitness(representation)));
+    }
+    return randomCromosomes;
+  }
+  
+  void produceGeneration(){
+    Collections.sort(this.generation, new Comparator<Cromosome>(){
+      public int compare(Cromosome a, Cromosome b){
+        return a.fitness-b.fitness;
+      }
+    });
+    ArrayList<Cromosome> newGeneration = new ArrayList<Cromosome>();
+    for(int i=0; i<20; i++){
+      newGeneration.add(this.generation.get(i));
+    }
+    Cromosome firstParent;
+    Cromosome secondParent;
+    for(int i=0; i<(cromosomesPerGeneration-30); i++){
+      firstParent = this.generation.get(getRandomParent());
+      secondParent = this.generation.get(getRandomParent());
+      newGeneration.add(mate(firstParent, secondParent));
+    }
+    newGeneration.addAll(randomizeGeneration(10));
+    //for(Cromosome cromosome: newGeneration){
+    //     println(cromosome.toString());
+    //}
+    println(newGeneration.get(0).toString());
+    println("------------------------------------------------------------------");
+    this.generation = newGeneration;
+  }
+  
+  Cromosome mate(Cromosome female, Cromosome male){
+    int distribution = int(random(1, this.vehicles.size()));
+    int[] femaleDNA = Arrays.copyOfRange(female.representation, 0, distribution);
+    int[] maleDNA = Arrays.copyOfRange(male.representation, distribution, this.vehicles.size());
+    int femaleLen = femaleDNA.length;
+    int maleLen = maleDNA.length;
+    int[] crossDNA = new int[femaleLen + maleLen];
+    System.arraycopy(femaleDNA, 0, crossDNA, 0, femaleLen);
+    System.arraycopy(maleDNA, 0, crossDNA, femaleLen, maleLen);    
+    return new Cromosome(crossDNA, calculateFitness(crossDNA));
+  }
+  
+  int getRandomParent(){
+     if(random(1)>0.60){
+       return int(random(10));
+     }
+     return int(random(10,100));
   }
   
   int calculateFitness(int[] representation){
     int fitness = 0;
     int[] costPerLine = calculateLineCost(representation);
+    
     for(int i= 0; i<this.linesCapacity.size(); i++){
-      if(costPerLine[i]> this.linesCapacity.get(i)){
+      if(costPerLine[i] > this.linesCapacity.get(i)){
         fitness+=timePenalty;
       }
     }
@@ -83,13 +161,21 @@ class GeneticAlgorithm {
       }
       return costPerLine;
   }
-  class cromosome {
+  class Cromosome{
     int[] representation; // cromosoma = [idLine, idLine, idLine....lenVehicle]
     int fitness;
     
-    cromosome(int[] representation, int fitness){
+    Cromosome(int[] representation, int fitness){
       this.representation = representation;
       this.fitness = fitness;
+    }
+    
+    String toString(){
+      String chain = "";
+      for(int line:this.representation){
+        chain+=line;
+      }
+      return "Representation: " + chain + " \\n fitness: " + String.valueOf(this.fitness) + "\\n"; 
     }
     
   }

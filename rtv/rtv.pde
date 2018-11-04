@@ -18,7 +18,7 @@ void setup()
   textSize(15);       
   street = new Street();
   rtv = new RTV(6);
-  rtv.attend(2, new MotoNueva());
+  /*rtv.attend(2, new MotoNueva());
   rtv.attend(2, new MotoVieja());
   rtv.hold(5, new MotoVieja());
   rtv.hold(4, new MotoVieja());
@@ -26,7 +26,7 @@ void setup()
   rtv.attend(4, new Bus());
   rtv.hold(4, new SedanNuevo());
   Vehicle s = new SedanNuevo();
-  rtv.hold(1, s);
+  rtv.hold(1, s);*/
   frameRate(REIT);
 }
 
@@ -67,10 +67,21 @@ void keyPressed() {
       println("up arrow");
     }
   } else if (key == 's') {
-    println(solver);
+    println("random solver");
     solver = new GeneticAlgorithm(randomLines(), randomVehicles());
-  } else if ((key == '1') || (key == '2') || (key == '3') || (key == '4') || (key == '5') || (key == '6') || (key == '7')) {
-    println(key);
+    solver.solve();
+  }else if (key == 'd') {
+    if (rtv.dealing) return;
+    solver = new GeneticAlgorithm(rtv.attentionLines, street.pending);
+    int[] solution = solver.solve();
+    assert solution.length == street.pending.size();
+    int idx;
+    for (Vehicle v : street.pending){
+      idx = street.pending.indexOf(v);
+      rtv.deals.add(new Deal(solution[idx], v));
+    }
+    rtv.dealing = true;
+  } else if ("1234567".indexOf(key) > -1) {
     String[] splitted = split(key+"", "\n");
     street.addVehicle(int(splitted[0])-1);
   }
