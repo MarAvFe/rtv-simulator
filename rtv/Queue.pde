@@ -86,7 +86,8 @@ class Line extends Queue {
           return v;
         }
       }
-      if (frameCount%REIT == 0) v.giveStep();
+      if (frameCount % REIT == 0) 
+      v.giveStep();
     }
     return null;
   }
@@ -164,7 +165,7 @@ class RTV {
       Vehicle v = l.update();
       if (v != null) {
         l.queue.remove(v);
-        this.attend(this.waitLines.indexOf(l),v);
+        this.attend(this.waitLines.indexOf(l), v);
       }
     }
     for ( Line l : this.attentionLines ) {

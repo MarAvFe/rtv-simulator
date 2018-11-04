@@ -3,16 +3,16 @@ int timer = 0;
 color[] backgrounds = { color(100, 70, 70), color(104, 135, 36) };
 color[] vehicleBackgrounds = {color(118, 70, 25), color(46, 206, 219), color(255) };
 int[] win = {1440, 800};
-float[] sizeRTV = {win[0]*0.2, win[1]*0.6};
+float[] sizeRTV = { width * 0.2, height * 0.6 };
 RTV rtv;
-int REIT = 50;
+int REIT = 10;
 GeneticAlgorithm solver;
 
 void setup()                   
 {
   size (1440, 800);
-  //smooth(4);
-  xPos = width/2;                
+  smooth(4);
+  xPos = width / 2;                
   fill(0, 255, 0);               
   textSize(15);                
   rtv = new RTV(6);
@@ -30,7 +30,6 @@ void setup()
 void draw() {
   background (100);
   text("Leyenda: "+timer, 10, 20);
-  if (frameCount % REIT == 0) timer+=1;
 
   Vehicle[] muestrario = {
     new Vehicle(30), 
@@ -51,6 +50,10 @@ void draw() {
   }
 
   rtv.draw();
+  
+  if (frameCount % REIT == 0) {
+    timer+=1;
+  }
   rtv.update();
 }
 

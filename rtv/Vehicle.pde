@@ -3,7 +3,7 @@ class Vehicle {
   int duration, timeLeft;
   float posX, posY, offsetX, offsetY;
   float orientation;
-  boolean attended, showTicker;
+  boolean attended, showTicker, stuck;
   float stepSize;
   float pathLength;
 
@@ -16,6 +16,7 @@ class Vehicle {
     this.stepSize = 2; 
     this.posX = 40; 
     this.posY = 200;
+    this.stuck = true;
   }
 
   void setStepSize(float lineWidth) {
@@ -49,26 +50,28 @@ class Vehicle {
   }
 
   void setOffsets(float x, float y) {
-    if(x == 0.0) x = width*0.35; // TODO: khe bergüensa
+    if (x == 0.0) x = width*0.35; // TODO: khe bergüensa
     this.offsetX = x; 
     this.offsetY = y;
   }
-  
+
   void setOrientation(float orientation) { 
     this.orientation = radians(orientation);
   }
 
   boolean canGiveStep() { // LookAhead
-    if ( this.pathLength < this.stepSize-30 ){ // TODO: fix magic number
-      this.attended = false;
+    int ahead = -30;
+    if ( this.pathLength < this.stepSize+ahead ) { // TODO: fix magic number
+      this.stuck = true;
       return false;
     }
-    
+
     boolean can = true;
     loadPixels();
-    float x = this.posX+this.offsetX+100;
+    ahead = (this.attended) ? 100 : 20;
+    float x = this.posX+this.offsetX+ahead;
     float y = this.posY+this.offsetY;
-    color[] pixs = new color[int(this.stepSize+0.3)];
+    color[] pixs = new color[int(this.stepSize)];
     for (int i = 0; i < pixs.length; i++) {
       int sight = int(y*width + x + i);
       pixs[i] = pixels[sight];
@@ -79,14 +82,21 @@ class Vehicle {
         break;
       }
     }
+    this.stuck = !can;
     return can;
   }
 
   void giveStep() {
-    if ( this.canGiveStep() ){
-      this.posX += this.stepSize;
-      this.pathLength -= this.stepSize;
-      if ((frameCount % REIT == 0) && this.attended) this.decrease(); /* Si está siendo atendido, disminuya el timer */
+    if ( this.canGiveStep() ) {
+      float paso;
+      if ((frameCount % REIT == 0) && !this.stuck) {
+        paso = this.stepSize;
+        this.decrease(); /* Si está siendo atendido, disminuya el timer */
+      } else {
+        paso = this.stepSize*4;
+      }
+      this.posX += paso;
+      this.pathLength -= paso;
     }
   }
 
@@ -100,7 +110,7 @@ class Vehicle {
   }
 
   void draw() {
-    
+
     pushStyle();
     pushMatrix();
     translate(this.posX, this.posY);
