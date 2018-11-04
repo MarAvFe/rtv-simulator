@@ -59,8 +59,9 @@ void keyPressed() {
       println("up arrow");
     }
   } else if (key == 's') {
-    println(solver);
+    println("solver");
     solver = new GeneticAlgorithm(randomLines(), randomVehicles());
+    solver.solve();
   }
 }
 
