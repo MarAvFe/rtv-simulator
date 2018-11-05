@@ -5,11 +5,14 @@ import java.util.Arrays;
 class GeneticAlgorithm {
   static final int carTypePenalty = 7;
   static final int timePenalty = 3;
+  static final int pausedLinePenalty = 11;
+  static final int lazyLinePenalty = 2;
   static final int cromosomesPerGeneration = 100;
-  static final int maxGenerations = 500;
+  static final int maxGenerations = 1000;
   
   ArrayList<boolean[]> linesTypes;
   ArrayList<Integer> linesCapacity;
+  ArrayList<Boolean> linesRunning;
   ArrayList<Vehicle> vehicles;
   
   ArrayList<Cromosome> generation = new ArrayList<Cromosome>();
@@ -17,9 +20,11 @@ class GeneticAlgorithm {
   GeneticAlgorithm(ArrayList<Line> lines, ArrayList<Vehicle> vehicles){
     this.linesTypes = new ArrayList<boolean[]>();
     this.linesCapacity = new ArrayList<Integer>();
+    this.linesRunning = new ArrayList<Boolean>();
     for(Line line:lines){
         this.linesTypes.add(line.types);
         this.linesCapacity.add(line.capacity);
+        this.linesRunning.add(line.running);
         String tipos = "";
         for (boolean b : this.linesTypes.get(this.linesTypes.indexOf(line.types))) tipos += (b)?"true, ":"false, ";
         //println(lines.indexOf(line)+"("+line.capacity+"):"+tipos);
@@ -45,11 +50,11 @@ class GeneticAlgorithm {
     initGeneration();
     int currentGeneration = 0;
     while(currentGeneration< maxGenerations && this.generation.get(0).fitness!= 0){
-      println(currentGeneration);
+      //println(currentGeneration);
       produceGeneration();
       currentGeneration++;
     }
-    println("Best fitness found -> " + this.generation.get(0).toString());
+    println("Best fitness found -> " + this.generation.get(0).toString() + " on generation " + currentGeneration);
     return this.generation.get(0).representation;
   }
   ArrayList<Cromosome> randomizeGeneration(int quantity) {
@@ -85,8 +90,8 @@ class GeneticAlgorithm {
     //for(Cromosome cromosome: newGeneration){
     //     println(cromosome.toString());
     //}
-    println(newGeneration.get(0).toString());
-    println("------------------------------------------------------------------");
+    //println(newGeneration.get(0).toString());
+    //println("------------------------------------------------------------------");
     this.generation = newGeneration;
   }
   
@@ -114,16 +119,33 @@ class GeneticAlgorithm {
     int[] costPerLine = calculateLineCost(representation);
     
     for(int i= 0; i<this.linesCapacity.size(); i++){
+      //Add timePenalty per line that is overloaded
       if(costPerLine[i] > this.linesCapacity.get(i)){
         fitness+=timePenalty;
       }
+      //add penalty whenever a line is below 50% capacity
+      if(costPerLine[i] < Math.round(this.linesCapacity.get(i) * 0.5)){
+        //println("lazy line capacity " + this.linesCapacity.get(i) + " actual load " + costPerLine[i]);
+        fitness+=lazyLinePenalty;
+      }
     }
     
+    
     for(int k=0; k<this.vehicles.size(); k++){
+      //add typePenalty per invalid vehicle in each line
       if(!validVehicle(this.vehicles.get(k), representation[k])){
         fitness+=carTypePenalty;
       }
+      
+      //add pena;ty if car was added to inactive line
+      if(!this.linesRunning.get(representation[k])){
+        fitness+= pausedLinePenalty;
+      }
     }
+    
+    
+    
+    
     return fitness;
   }
   

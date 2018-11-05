@@ -160,6 +160,12 @@ class SedanViejo extends Vehicle {
   SedanViejo() { 
     super(60);
   }
+  void shape() {
+    fill(vehicleBackgrounds[2]);
+    rect(0,0,7,13);
+     ellipse(0, 10, 7, 13);
+    ellipse(0, -10, 5, 10);
+  }
 }
 class SedanNuevo extends Vehicle { 
   SedanNuevo() { 

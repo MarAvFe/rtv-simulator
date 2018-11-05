@@ -1,7 +1,7 @@
 int xPos;                        
 int timer = 0;
 color[] backgrounds = { color(100, 70, 70), color(104, 135, 36) };
-color[] vehicleBackgrounds = {color(118, 70, 25), color(46, 206, 219), color(255) };
+color[] vehicleBackgrounds = {color(118, 70, 25), color(46, 206, 219), color(255),  };
 int[] win = {1440, 800};
 float[] sizeRTV = { width * 0.2, height * 0.6 };
 RTV rtv;
