@@ -67,6 +67,14 @@ class Line extends Queue {
       this.capacity = capacity;
     }
   }
+  
+  void increaseCapacity(){
+    this.setCapacity(this.capacity + 10);
+  }
+  
+  void decreaseCapacity(){
+    this.setCapacity(this.capacity - 10);
+  }
 
   void setTypes(boolean[] types) {
     this.types = types;
@@ -98,6 +106,8 @@ class Line extends Queue {
   void draw() {
     fill(backgrounds[(this.isAttention)?0:1]);
     rect(this.pathStart, this.pathHeight-this.pathAltitude/2, this.pathLength, this.pathAltitude);
+    fill(0);
+    text(this.load+"/"+this.capacity,this.pathStart+10,this.pathHeight+this.pathAltitude/2-10);
     if (! this.running) {
       pushStyle();
       stroke(255,0,0);
@@ -151,8 +161,8 @@ class RTV {
     for ( int i = 0; i < numLines; i++ ) {
       boolean[] types = {true, true, true, true, true, true, true};
       float h = this.posY + (i*this.lineHeight - this.lineHeight/2);
-      this.attentionLines.add(new Line(20, true, types, this.allWidth/2, h, this.allWidth/2, this.lineHeight));
-      this.waitLines.add(new Line(20, false, types, 0, h, this.allWidth/2, this.lineHeight));
+      this.attentionLines.add(new Line(400, true, types, this.allWidth/2, h, this.allWidth/2, this.lineHeight));
+      this.waitLines.add(new Line(400, false, types, 0, h, this.allWidth/2, this.lineHeight));
     }
   }
 
@@ -194,14 +204,19 @@ class RTV {
     for ( Line l : this.waitLines ) {
       Vehicle v = l.update();
       if (v != null) {
-        l.queue.remove(v);
-        this.attend(this.waitLines.indexOf(l), v);
+        Line attLine = this.attentionLines.get(this.waitLines.indexOf(l));
+        if(attLine.capacity - attLine.load >= v.duration){
+          Vehicle ve = l.dequeue();
+          this.attend(this.waitLines.indexOf(l), ve);
+        } else {
+          v.stuck = true;
+        }
       }
     }
     for ( Line l : this.attentionLines ) {
       Vehicle v = l.update();
       if (v != null) {
-        l.queue.remove(v);
+        l.dequeue();
       }
     }
     if (frameCount % (REIT*2) == 0) {
@@ -290,13 +305,13 @@ class Street {
 
   void draw() {
     pushStyle();
-    fill(50);
+    fill(150);
     strokeWeight(3);
     if (ctrl.rtv.dealing) stroke(255, 0, 0);
     rect(startX, startY, width*0.25, height*0.3);
     popStyle();
     for (Vehicle v : pending) {
-      float x = this.startX+40+(50*(int(pending.indexOf(v)/5)));
+      float x = this.startX+40+(70*(int(pending.indexOf(v)/5)));
       float y = this.startY+20+((pending.indexOf(v)%5)*50);
       v.setPos(x, y);
       v.draw();

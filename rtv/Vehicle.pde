@@ -161,29 +161,82 @@ class SedanViejo extends Vehicle {
     super(60);
   }
   void shape() {
-    fill(vehicleBackgrounds[2]);
-    rect(0,0,7,13);
-     ellipse(0, 10, 7, 13);
-    ellipse(0, -10, 5, 10);
+    fill(0);
+    ellipse(-7,-10,4,7);
+    ellipse(8,-10,4,7);
+    ellipse(7,14,4,7);
+    ellipse(-7,14,4,7);
+    fill(vehicleBackgrounds[3]);
+    rect(-7,-15,14,35);
   }
 }
 class SedanNuevo extends Vehicle { 
   SedanNuevo() { 
     super(40);
   }
+  void shape() {
+    fill(0);
+    ellipse(-7,-10,4,7);
+    ellipse(8,-10,4,7);
+    ellipse(8,14,4,7);
+    ellipse(-8,14,4,7);
+    fill(vehicleBackgrounds[4]);
+    rect(-7,-15,14,35);
+  }
 }
 class Bus extends Vehicle { 
   Bus() { 
     super(80);
+  }
+  void shape() {
+    fill(vehicleBackgrounds[5]);
+    rect(-7,-15,14,45);
+    fill(vehicleBackgrounds[6]);
+    rect(-5,-3,3,3);
+    rect(2,25,3,3);
+    fill(0);
+    ellipse(-7,-10,4,7);
+    ellipse(8,-10,4,7);
+    ellipse(7,21,4,7);
+    ellipse(-7,21,4,7);
   }
 }
 class CamionDosEjes extends Vehicle { 
   CamionDosEjes() { 
     super(100);
   }
+  void shape() {
+    fill(vehicleBackgrounds[7]);
+    rect(-9,-15,18,45);
+    fill(vehicleBackgrounds[8]);
+    rect(-9,0,18,30);
+    fill(0);
+    ellipse(-9,-10,4,7);
+    ellipse(9,-10,4,7);
+    ellipse(9,21,4,7);
+    ellipse(-9,21,4,7);
+  }
 }
 class CamionCincoEjes extends Vehicle { 
   CamionCincoEjes() { 
     super(120);
+  }
+  void shape() {
+    fill(vehicleBackgrounds[9]);
+    rect(-9,-15,18,60);
+    fill(vehicleBackgrounds[10]);
+    rect(-9,5,18,40);
+    fill(0);
+    ellipse(-9,-10,4,7);
+    ellipse(9,-10,4,7);
+    
+    ellipse(9,10,4,7);
+    ellipse(-9,10,4,7);
+    
+    ellipse(9,32,4,7);
+    ellipse(-9,32,4,7);
+    
+    ellipse(9,40,4,7);
+    ellipse(-9,40,4,7);
   }
 }

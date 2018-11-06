@@ -1,7 +1,7 @@
 int xPos;                        
 int timer = 0;
 color[] backgrounds = { color(100, 70, 70), color(104, 135, 36) };
-color[] vehicleBackgrounds = {color(118, 70, 25), color(46, 206, 219), color(255),  };
+color[] vehicleBackgrounds = {color(118, 70, 25), color(46, 206, 219), color(255), color(35,155,190), color(150,25,190), color(255,255,0), color(255,0,0), color(255,128,0), color(130,65,74), color(200), color(90)};
 int[] win = {1440, 800};
 float[] sizeRTV = { width * 0.2, height * 0.6 };
 RTV rtv;
@@ -46,6 +46,12 @@ void keyPressed() {
     }
     if (keyCode == DOWN) {
       ctrl.selectDown();
+    }
+    if (keyCode == RIGHT) {
+      ctrl.rtv.attentionLines.get(ctrl.selected).increaseCapacity();
+    }
+    if (keyCode == LEFT) {
+      ctrl.rtv.attentionLines.get(ctrl.selected).decreaseCapacity();
     }
   } else if (key == 's') {
     println("random solver");

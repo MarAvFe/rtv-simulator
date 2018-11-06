@@ -6,7 +6,7 @@ class GeneticAlgorithm {
   static final int carTypePenalty = 7;
   static final int timePenalty = 3;
   static final int pausedLinePenalty = 11;
-  static final int lazyLinePenalty = 7;
+  static final int lazyLinePenalty = 2;
   static final int cromosomesPerGeneration = 100;
   static final int maxGenerations = 1000;
   
@@ -143,17 +143,19 @@ class GeneticAlgorithm {
       }
     }
     
-    int total = 0;
-    for ( int i : representation ) total += i;
-    float avg = total / representation.length;
-    float dif = representation.length - avg;
-    fitness += 15*dif;
+    
+    
     
     return fitness;
   }
   
   boolean validVehicle(Vehicle vehicle, int typesIndex){
-    if(vehicle instanceof MotoVieja){
+    ArrayList<Class> vType = new ArrayList<Class>(Arrays.asList(MotoVieja, MotoNueva,SedanViejo,SedanNuevo,Bus,CamionDosEjes,CamionCincoEjes);
+    int idx = vType.indexOf(vehicle.getClass());
+    if(vehicle instanceof vType.get(idx)){
+        return linesTypes.get(typesIndex)[idx];
+    }
+    /*if(vehicle instanceof MotoVieja){
       return linesTypes.get(typesIndex)[0];
     }
     if(vehicle instanceof MotoNueva){
@@ -173,7 +175,7 @@ class GeneticAlgorithm {
     }
     if(vehicle instanceof CamionCincoEjes){
       return linesTypes.get(typesIndex)[6];
-    }
+    }*/
     return false;
   }
   

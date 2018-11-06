@@ -22,7 +22,7 @@ class Control {
 
     for ( int i = 0; i < muestrario.length; i++ ) {
       float altura = 50+(i*25);
-      muestrario[i].setPos(30, altura);
+      muestrario[i].setPos(50, altura);
       muestrario[i].showTicker = false;
       //text(muestrario[i].getClass().getName()+": "+muestrario[i].duration, 60, altura+5);
     }
@@ -55,19 +55,19 @@ class Control {
     pushStyle();
     for ( int i = 0; i < this.muestrario.length; i++ ) {
       float altura = 50+(i*25);
-      text(this.muestrario[i].duration, 60, altura+5);
+      text(this.muestrario[i].duration, 80, altura+5);
       this.muestrario[i].draw();
       pushStyle();
       if ( this.rtv.attentionLines.get(this.selected).types[i] ) {
         noStroke();
         fill(255, 0, 0);
-        ellipse(100, altura, 5, 5);
+        ellipse(120, altura, 5, 5);
       }
       noFill();
       stroke(0);
-      rect(90, altura-10, 20, 20);
+      rect(110, altura-10, 20, 20);
       fill(0);
-      text(typeCtrl.split("")[i], 120, altura+5);
+      text(typeCtrl.split("")[i], 140, altura+5);
       popStyle();
     }
     popStyle();
