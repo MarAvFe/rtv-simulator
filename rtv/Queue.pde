@@ -67,12 +67,12 @@ class Line extends Queue {
       this.capacity = capacity;
     }
   }
-  
-  void increaseCapacity(){
+
+  void increaseCapacity() {
     this.setCapacity(this.capacity + 10);
   }
-  
-  void decreaseCapacity(){
+
+  void decreaseCapacity() {
     this.setCapacity(this.capacity - 10);
   }
 
@@ -107,10 +107,10 @@ class Line extends Queue {
     fill(backgrounds[(this.isAttention)?0:1]);
     rect(this.pathStart, this.pathHeight-this.pathAltitude/2, this.pathLength, this.pathAltitude);
     fill(0);
-    text(this.load+"/"+this.capacity,this.pathStart+10,this.pathHeight+this.pathAltitude/2-10);
+    text(this.load+"/"+this.capacity, this.pathStart+10, this.pathHeight+this.pathAltitude/2-10);
     if (! this.running) {
       pushStyle();
-      stroke(255,0,0);
+      stroke(255, 0, 0);
       strokeWeight(5);
       line(this.pathStart, this.pathHeight-this.pathAltitude/2, this.pathStart, this.pathHeight);
       line(this.pathStart, this.pathHeight, this.pathStart+this.pathAltitude, this.pathHeight-this.pathAltitude/2);
@@ -157,10 +157,10 @@ class RTV {
     this.posY = height*0.1;
     this.allHeight = height*0.6;
     this.allWidth = width*0.6;
-    this.lineHeight = this.allHeight / this.numLines;
+    this.lineHeight = this.allHeight / this.numLines-1;
     for ( int i = 0; i < numLines; i++ ) {
       boolean[] types = {true, true, true, true, true, true, true};
-      float h = this.posY + (i*this.lineHeight - this.lineHeight/2);
+      float h = this.posY + ((i*this.lineHeight) - (this.lineHeight/2));
       this.attentionLines.add(new Line(400, true, types, this.allWidth/2, h, this.allWidth/2, this.lineHeight));
       this.waitLines.add(new Line(400, false, types, 0, h, this.allWidth/2, this.lineHeight));
     }
@@ -205,7 +205,7 @@ class RTV {
       Vehicle v = l.update();
       if (v != null) {
         Line attLine = this.attentionLines.get(this.waitLines.indexOf(l));
-        if(attLine.capacity - attLine.load >= v.duration){
+        if (attLine.capacity - attLine.load >= v.duration) {
           Vehicle ve = l.dequeue();
           this.attend(this.waitLines.indexOf(l), ve);
         } else {
@@ -309,6 +309,17 @@ class Street {
     strokeWeight(3);
     if (ctrl.rtv.dealing) stroke(255, 0, 0);
     rect(startX, startY, width*0.25, height*0.3);
+    fill(0);
+    textSize(20);
+    float ih = height*0.75;
+    text("1-7: add cars",30,ih);
+    text("DEL: delete last car",30,ih+25);
+    text("QWERTYU: toggle line types",30,ih+50);
+    text("D: Distribute cars",30,ih+75);
+    text("F: Remove first attended car",30,ih+100);
+    text("UP/DOWN: select line",30,ih+125);
+    text("X: reboot simulation",30,ih+150);
+    text("ESC: exit",30,ih+175);
     popStyle();
     for (Vehicle v : pending) {
       float x = this.startX+40+(70*(int(pending.indexOf(v)/5)));

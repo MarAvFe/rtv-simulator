@@ -44,7 +44,7 @@ class Control {
     // Arrow
     pushStyle();
     float center = lineHeights[selected];
-    stroke(255, 255, 0);
+    stroke(255, 255, 1);
     strokeWeight(5);
     line(width*0.96, center, width*0.97, center-10);
     line(width*0.96, center, width*0.99, center);

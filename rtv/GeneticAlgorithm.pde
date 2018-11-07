@@ -143,11 +143,11 @@ class GeneticAlgorithm {
       }
     }
     
-    int total = 0;
+    /*int total = 0;
     for ( int i : representation ) total += i;
-    float avg = total / representation.length;
+    float avg = total / representation.length; 
     float dif = representation.length - avg;
-    fitness += 15*dif;
+    fitness += 15*dif;*/
     
     return fitness;
   }

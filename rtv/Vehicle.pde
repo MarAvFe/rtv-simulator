@@ -51,7 +51,7 @@ class Vehicle {
 
   void setOffsets(float x, float y) {
     if (x == 0.0) x = width*0.35; // TODO: khe bergüensa
-    this.offsetX = x; 
+    this.offsetX = x-700; 
     this.offsetY = y;
   }
 
@@ -68,17 +68,18 @@ class Vehicle {
 
     boolean can = true;
     loadPixels();
-    ahead = (this.attended) ? 100 : 40;
+    ahead = (this.attended) ? 80 : 20;
     float x = this.posX+this.offsetX+ahead;
     float y = this.posY+this.offsetY;
-    int delta = (this.attended) ? 5 : 20;
+    int delta = (this.attended) ? 0 : 20;
     color[] pixs = new color[int(this.stepSize+delta)];
     for (int i = 0; i < pixs.length; i++) {
-      int sight = int(y*width + x + i - delta);
+      int sight = int((y*width) + x + i - delta);
       pixs[i] = pixels[sight];
-      // pixels[sight] = color(255); // aim 
+      if(view)pixels[sight] = color(255); // aim
+      //println(y, x, i, delta);
     }
-    //updatePixels();
+    if(view)updatePixels();
     for (color c : pixs) {
       if ( isVehicle(c) ) {
         can = false;
